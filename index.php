@@ -44,6 +44,7 @@ require_once ('./env.php');
 <body>
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
+          }
           <h1 class="display-4">PHP Message Board</h1>
           <form method="POST">
             <div class="form-group">
@@ -67,10 +68,18 @@ require_once ('./env.php');
       </div>
      <!--表示部分-->  
     <div class="container">
+    <?php
+          foreach($message_list as $message){
+            <div class="alert alert-primary" role="alert">
+            <p><?=$message->get_main() ?></p>
+            <p class="text-right"><?=$message->get_user_name() ?>
+            (<?=$message->get_created_at() ?>) </p>
+            </div>
         <div class="alert alert-primary" role="alert">
            <p>投稿内容</p>
            <p class="text-right">投稿者</p>
         </div>
+      <?php } ?>
     </div>
 
 
