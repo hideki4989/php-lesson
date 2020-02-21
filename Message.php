@@ -28,7 +28,7 @@ class Message
     {
         return $this->main;
     }
-
+    //datetimeだけどphpではdate縛りができません
     public function get_created_at(): string
     {
         return $this->created_at;

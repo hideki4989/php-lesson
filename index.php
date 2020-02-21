@@ -1,10 +1,32 @@
 <?php
+//関連ファイルのインポート
+require_once ('./message.php');
+require_once ('./env.php');
+
   if($_SERVER['REQUEST_METHOD']==="POST"){
     //POST リクエスト時の処理
 
 
   }else{
-    
+    //GETリクエスト時の処理
+
+    //一覧表示用の配列を宣言
+    $message_list = array();
+    try{
+      //DBにアクセスして登録済データを投稿の新しい順に取得
+      $pdo = new PDO(DSN, DB_USER, DB_PASS);
+      $msgs = $pdo->query(
+        "SELECT * FROM messages ORDER BY id DESC"
+      );
+      //massegeオブジェクトに格納、配列に追加
+      foreach($msgs as $msg){
+        $message = new Message($msg['user_name'],$msg['user_email'],$msg['main'],$msg['created_at']);
+        array_push($message_list,$message);
+      }
+    }catch(PDOEXception $e ){
+      print("DBに接続できませんでしたよ！");
+      die();
+    }
   }
 ?>
 <!doctype html>
