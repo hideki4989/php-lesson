@@ -68,7 +68,7 @@ require_once ('./env.php');
      <!--表示部分-->  
     <div class="container">
       <?php
-         foreach($message_list as $message){
+         foreach($message_list as $message){ ?>
           <div class="alert alert-primary" role="alert">
             <p><?=$message->get_main() ?></p>
             <p class="text-right"><?=$message->get_user_name() ?>
