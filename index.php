@@ -10,8 +10,16 @@ require_once ('./env.php');
     $user_name = htmlspecialchars($_POST['user_name']);
     $user_email = htmlspecialchars($_POST['user_email']);
     $main = htmlspecialchars($_POST['main']);
+    //バリデーション用の連想配列を定義
+    $data = ['user_name' => $user_name, 'user_email' => $user_email, 'main' => $main];
     //データのチェック（バリデーション）
+    $v = new Valitron\Validator($data);
+    $v->rule('required',['user_name', 'user_email', 'main'])->message('{field}は必須です');
+    $v->rule('email', 'user_email')->message('{fieldが不正です}');
+    $v->labels(array('user_name' => '名前', 'user_email' => 'メールアドレス', 'main' => '本文'));
 
+    //データに不備がなければ
+    if($v->validate()){
     //データベースに登録
     try{
       //DBに登録
@@ -26,6 +34,12 @@ require_once ('./env.php');
     }catch(PDOEXception $e ){
       print('DBに接続できませんでしたわよ！');
       die();
+    }else{
+    //不備があれば
+    //入力値とエラーメッセージをセッションに登録
+      $msg = new Message($user_name, $user_email, $main, '');
+      $_SESSION['inputMsg'] = serialize($msg);
+      $_SESSION['errorMsg'] = $v->errors();
     }
     //リダイレクト
     header('location:'.$_SERVER['SCRIPT_NAME']);
@@ -33,6 +47,20 @@ require_once ('./env.php');
 
   }else{
     //GETリクエスト時の処理
+
+    //エラー表示
+    $user_name = '';
+    $user_email = '';
+    $main = '';
+
+    if(isset($_SESSION['inputMsg'])){
+      $inputMsg = unserialize($_SESSION['inputMsg']);
+      $user_name = $inputMsg->get_user_name();
+      $user_email = $inputMsg->get_user_email();
+      $main = $inputMsg->get_main();
+      //セッション変数を消去
+      unset($_SESSION['inputMsg']);
+    }
 
     //一覧表示用の配列を宣言
     $message_list = array();
@@ -69,20 +97,33 @@ require_once ('./env.php');
     <div class="jumbotron jumbotron-fluid">
         <div class="container">
           <h1 class="display-4">PHP Message Board</h1>
+            <?php  
+              if(isset($_SESSION['errorMsg'])){
+                  foreach ($_SESSION['errorMsg'] as $error){
+                    echo '<ul class="error">';
+                      foreach($error as $value){
+                        echo"<li>".$value."</li>";
+                      }
+                      echo""</ul>";
+                  }
+                  //表示が終わったらセッション変数は消去
+                  unset($_SESSION['errorMsg']);
+                }
+            ?>
           <form method="POST">
             <div class="form-group">
               <label for="user_name">お名前</label>
-              <input type="text" class="form-control" name="user_name" id="user_name">
+              <input type="text" class="form-control" name="user_name" id="user_name" value="<?=$user_name ?>">
               <small class="form-text text-muted">投稿者名を記入してください</small>
             </div>
             <div class="form-group">
                 <label for="user_email">メールアドレス</label>
-                <input type="email" class="form-control" name="user_email" id="user_email">
+                <input type="email" class="form-control" name="user_email" id="user_email" id="user_email" value="<?=$user_email ?>">
                 <small class="form-text text-muted">投稿者のメールアドレスを記入してください</small>
               </div>
             <div class="form-group">
               <label for="main">メッセージ</label>
-              <textarea name="main" class="form-control" id="main" rows="3"></textarea>
+              <textarea name="main" class="form-control" id="main" rows="3"><?=$main ?></textarea>
               <small class="form-text text-muted">メッセージ本文</small>
             </div>
             <button type="submit" class="btn btn-primary">投稿</button>
