@@ -15,7 +15,7 @@ require_once ('./env.php');
     //データベースに登録
     try{
       //DBに登録
-      $pdo = new PDO(DNS, DB_USER, DB_PASS);
+      $pdo = new PDO(DSN, DB_USER, DB_PASS);
       $sql = 'INSERT INTO messages(user_name, user_email, main, created_at) 
        values(:user_name, :user_email, :main, now() )';
        $stmt = $pdo->prepare($sql);
