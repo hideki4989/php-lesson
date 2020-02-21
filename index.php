@@ -104,7 +104,7 @@ require_once ('./env.php');
                       foreach($error as $value){
                         echo"<li>".$value."</li>";
                       }
-                      echo""</ul>";
+                      echo "</ul>";
                   }
                   //表示が終わったらセッション変数は消去
                   unset($_SESSION['errorMsg']);
