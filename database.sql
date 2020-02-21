@@ -1,8 +1,8 @@
 #DB定義
-drop database if exists bbs;
-create database bbs default charset utf8;
+drop database if exists iguchi_bbs;
+create database iguchi_bbs default charset utf8;
 
-use bbs;
+use iguchi_bbs;
 
 #TABLE定義
 create table messages (
@@ -18,4 +18,5 @@ insert into messages(user_name, user_email, main, created_at) values('貞夫','s
 insert into messages(user_name, user_email, main, created_at) values('貞夫','sadao@gmail.com','投稿テスト２',now());
 
 #アクセス権設定
-grant all on bbs.* to 'dbuser'@'%' identified by 'passwd';
+grant all on iguchi_bbs.* to 'iguchi'@'%' identified by 'passwd';
+grant all on iguchi_bbs.* to 'iguchi'@'localhost' identified by 'passwd';

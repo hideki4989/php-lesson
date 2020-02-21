@@ -1,3 +1,12 @@
+<?php
+  if($_SERVER['REQUEST_METHOD']==="POST"){
+    //POST リクエスト時の処理
+
+
+  }else{
+    
+  }
+?>
 <!doctype html>
 <html lang="ja">
 <head>
